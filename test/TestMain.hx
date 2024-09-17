@@ -22,7 +22,7 @@ class TestMain
     public function new()
     {
         // OpenFL/Flixel init
-           Lib.current.stage.addChild(new FlxGame(800, 600, null, 1, 60, 60, true));
+           Lib.current.stage.addChild(new FlxGame(800, 600, null, 60, 60, true));
 
            var suites = new Array<Class<massive.munit.TestSuite>>();
         suites.push(TestSuite);
