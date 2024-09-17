@@ -35,15 +35,7 @@ class TextBoxLine
         }
         characters.push(character);
         innerText.text += character.text;
-        #if js
-        // Legnth calculation wouldn't work properly if I haven't done this.
-        if(character.text.isSpace(0))
-            textWidth += character.width + characterSpacingHack;
-        else
-            textWidth = innerText.textField.textWidth;
-        #else
         textWidth = innerText.textField.textWidth;
-        #end
     }
 
     // Releases its characters to pass along or put them back into pool.
