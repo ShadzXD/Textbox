@@ -7,7 +7,6 @@ import textbox.TextPool;
 import flixel.group.FlxGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.typeLimit.OneOfTwo;
-import haxe.Utf8;
 
 using StringTools;
 
@@ -140,7 +139,7 @@ class Textbox extends FlxSpriteGroup {
      *  to set it up as the new sequence.
      *  @param text - New text to set
      */
-    public function setText(text:String)
+    public function setText(text:UnicodeString)
     {
         for(line in lines)
         {
@@ -204,17 +203,17 @@ class Textbox extends FlxSpriteGroup {
     /**
      * Parses collected sequence part and dispatches it to the command depending on the step the parsing is on.
      */
-    function processSequenceCodePart(currentHexString:String, commandParsingStep:Int, resultingCommand:CommandValues)
+    function processSequenceCodePart(currentHexString:UnicodeString, commandParsingStep:Int, resultingCommand:CommandValues)
     {
         // Basic sanity check : make sure that the parsed characters are alright
         // First character
 
-        if (hexadecimalCharacters.indexOf(Utf8.sub(currentHexString, 2, 1)) == -1)
+        if (hexadecimalCharacters.indexOf(currentHexString.substr(2, 1)) == -1)
         {
             return false;
         }
         // Second character (proccessed after to avoid going out of bounds for the toggle flag)
-        if (currentHexString.length == 4 && hexadecimalCharacters.indexOf(Utf8.sub(currentHexString, 3, 1)) == -1)
+        if (currentHexString.length == 4 && hexadecimalCharacters.indexOf(currentHexString.substr(3, 1)) == -1)
         {
             return false;
         }
@@ -247,7 +246,7 @@ class Textbox extends FlxSpriteGroup {
      *  Parses the set string and fill the character array with the possible characters and commands.
      *  TODO : this could be moved into a static function with a context class to help splitting code.
      */
-    function prepareString(text:String)
+    function prepareString(text:UnicodeString)
     {
         characters = [];
         var isParsingACommand = false;
@@ -262,14 +261,14 @@ class Textbox extends FlxSpriteGroup {
         var currentHexString:String = "0x";
         var commandParsingStep:Int = 0;
 
-        for(i in 0...Utf8.length(text))
+        for(i in 0...text.length)
         {
-            var currentCharacter = Utf8.sub(text, i, 1);
+            var currentCharacter:UnicodeString = text.substr(i, 1);
             // If we're still parsing a command code
             if(isParsingACommand)
             {
                 // Quick shortcut to check if the code is @@ to put @ in the text, just interrupt the parsing.
-                if(Utf8.compare(currentCharacter, '@') == 0 && commandParsingStep == 0)
+                if(currentCharacter == '@' && commandParsingStep == 0)
                 {
                     isParsingACommand = false;
                     characters.push(CharacterType.Character(currentCharacter));
@@ -317,7 +316,7 @@ class Textbox extends FlxSpriteGroup {
             else
             {
                 // Go into the hex code system if requested.
-                if(Utf8.compare(currentCharacter, '@') == 0)
+                if(currentCharacter == '@')
                 {
                     isParsingACommand = true;
                     commandParsingStep = 0;
